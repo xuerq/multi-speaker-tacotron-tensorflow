@@ -2,7 +2,7 @@ import os
 import re
 import sys
 import json
-import requests
+#import requests
 import subprocess
 from tqdm import tqdm
 from contextlib import closing
@@ -173,6 +173,7 @@ def get_encoder_name():
     else:
         return "ffmpeg"
 
+'''
 def download_with_url(url, dest_path, chunk_size=32*1024):
     with open(dest_path, "wb") as f:
         response = requests.get(url, stream=True)
@@ -182,6 +183,7 @@ def download_with_url(url, dest_path, chunk_size=32*1024):
             if chunk: # filter out keep-alive new chunks
                 f.write(chunk)
     return True
+'''
 
 def str2bool(v):
     return v.lower() in ('true', '1')

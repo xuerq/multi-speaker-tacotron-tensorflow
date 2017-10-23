@@ -5,7 +5,7 @@ import argparse
 import traceback
 import subprocess
 import numpy as np
-from jamo import h2j
+#from jamo import h2j
 import tensorflow as tf
 from datetime import datetime
 from functools import partial
@@ -15,7 +15,8 @@ from models import create_model, get_most_recent_checkpoint
 
 from utils import ValueWindow, prepare_dirs
 from utils import infolog, warning, plot, load_hparams
-from utils import get_git_revision_hash, get_git_diff, str2bool, parallel_run
+#from utils import get_git_revision_hash, get_git_diff, str2bool, parallel_run
+from utils import str2bool, parallel_run
 
 from audio import save_audio, inv_spectrogram
 from text import sequence_to_text, text_to_sequence
@@ -32,10 +33,12 @@ def create_batch_inputs_from_texts(texts):
 
     for idx, (seq, text) in enumerate(zip(inputs, texts)):
         recovered_text = sequence_to_text(seq, skip_eos_and_pad=True)
+        '''
         if recovered_text != h2j(text):
             log(" [{}] {}".format(idx, text))
             log(" [{}] {}".format(idx, recovered_text))
             log("="*30)
+        '''
 
     return inputs, input_lengths
 
@@ -119,10 +122,10 @@ def train(log_dir, config):
     commit = get_git_commit() if config.git else 'None'
     checkpoint_path = os.path.join(log_dir, 'model.ckpt')
 
-    log(' [*] git recv-parse HEAD:\n%s' % get_git_revision_hash())
-    log('='*50)
-    log(' [*] dit diff:\n%s' % get_git_diff())
-    log('='*50)
+    #log(' [*] git recv-parse HEAD:\n%s' % get_git_revision_hash())
+    #log('='*50)
+    #log(' [*] dit diff:\n%s' % get_git_diff())
+    #log('='*50)
     log(' [*] Checkpoint path: %s' % checkpoint_path)
     log(' [*] Loading training data from: %s' % data_dirs)
     log(' [*] Using model: %s' % config.model_dir)

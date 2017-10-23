@@ -1,11 +1,12 @@
 import re
+import sys
 import string
 import numpy as np
 
 from text import cleaners
 from hparams import hparams
 from text.symbols import symbols, PAD, EOS
-from text.korean import jamo_to_korean
+#from text.korean import jamo_to_korean
 
 
 # Mappings from symbol to numeric ID and vice versa:
@@ -19,7 +20,6 @@ puncuation_table = str.maketrans({key: None for key in string.punctuation})
 
 def remove_puncuations(text):
     return text.translate(puncuation_table)
-
 
 def text_to_sequence(text, as_token=False):
     cleaner_names = [x.strip() for x in hparams.cleaners.split(',')]
@@ -44,6 +44,7 @@ def _text_to_sequence(text, cleaner_names, as_token):
     while len(text):
         m = _curly_re.match(text)
         if not m:
+            sys.stdout.flush()
             sequence += _symbols_to_sequence(_clean_text(text, cleaner_names))
             break
         sequence += _symbols_to_sequence(_clean_text(m.group(1), cleaner_names))
@@ -56,7 +57,8 @@ def _text_to_sequence(text, cleaner_names, as_token):
     if as_token:
         return sequence_to_text(sequence, combine_jamo=True)
     else:
-        return np.array(sequence, dtype=np.int32)
+        ret= np.array(sequence, dtype=np.int32)
+        return ret
 
 
 def sequence_to_text(sequence, skip_eos_and_pad=False, combine_jamo=False):
@@ -74,10 +76,11 @@ def sequence_to_text(sequence, skip_eos_and_pad=False, combine_jamo=False):
 
     result = result.replace('}{', ' ')
 
-    if combine_jamo:
-        return jamo_to_korean(result)
-    else:
-        return result
+#    if combine_jamo:
+#        return jamo_to_korean(result)
+#    else:
+#        return result
+    return result
 
 
 def _clean_text(text, cleaner_names):

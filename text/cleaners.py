@@ -1,3 +1,4 @@
+# Code based on https://github.com/keithito/tacotron/blob/master/text/cleaners.py
 '''
 Cleaners are transformations that run over the input text at both training and eval time.
 
@@ -11,17 +12,13 @@ hyperparameter. Some cleaners are English-specific. You'll typically want to use
 '''
 
 import re
-from .korean import tokenize as ko_tokenize
+from unidecode import unidecode
+#from .korean import tokenize as ko_tokenize
 
 
 # Regular expression matching whitespace:
 _whitespace_re = re.compile(r'\s+')
 
-
-def korean_cleaners(text):
-    '''Pipeline for Korean text, including number and abbreviation expansion.'''
-    text = ko_tokenize(text)
-    return text
 
 
 # List of (regular expression, replacement) pairs for abbreviations:
@@ -71,6 +68,8 @@ def basic_cleaners(text):
     text = collapse_whitespace(text)
     return text
 
+def convert_to_ascii(text):
+	return unidecode(text)
 
 def transliteration_cleaners(text):
     '''Pipeline for non-English text that transliterates to ASCII.'''
@@ -78,3 +77,13 @@ def transliteration_cleaners(text):
     text = lowercase(text)
     text = collapse_whitespace(text)
     return text
+
+
+def english_cleaners(text):
+  '''Pipeline for English text, including number and abbreviation expansion.'''
+  text = convert_to_ascii(text)
+  #text = lowercase(text)
+  #text = expand_numbers(text)
+  #text = expand_abbreviations(text)
+  text = collapse_whitespace(text)
+  return text

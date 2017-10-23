@@ -1,6 +1,6 @@
 import os 
 import matplotlib
-from jamo import h2j, j2hcj
+#from jamo import h2j, j2hcj
 
 matplotlib.use('Agg')
 matplotlib.rc('font', family="NanumBarunGothic")
@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 from text import PAD, EOS
 from utils import add_postfix
-from text.korean import normalize
+#from text.korean import normalize
 
 def plot(alignment, info, text):
     char_len, audio_len = alignment.shape # 145, 200
@@ -30,7 +30,8 @@ def plot(alignment, info, text):
     plt.ylabel(ylabel)
 
     if text:
-        jamo_text = j2hcj(h2j(normalize(text)))
+        #jamo_text = j2hcj(h2j(normalize(text)))
+        jamo_text = text
         pad = [PAD] * (char_len - len(jamo_text) - 1)
 
         plt.xticks(range(char_len),
@@ -50,7 +51,8 @@ def plot_alignment(
         alignment, path, info=None, text=None):
 
     if text:
-        tmp_alignment = alignment[:len(h2j(text)) + 2]
+        #tmp_alignment = alignment[:len(h2j(text)) + 2]
+        tmp_alignment = alignment[:len(text) + 2]
 
         plot(tmp_alignment, info, text)
         plt.savefig(path, format='png')
