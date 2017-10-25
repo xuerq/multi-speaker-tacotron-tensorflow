@@ -13,7 +13,10 @@ PAD = '_'
 EOS = '~'
 PUNC = '!\'(),-.:;?'
 SPACE = ' '
-IPA = 'ŋθˈɑæˌɔɚðɛɪDFɹKLMNPRSʃTʊʌabʒdefghijklmnopstʤuvʧwz'
+IPA_en = 'ŋθˈɑæˌɔɚðɛɪDFɹKLMNPRSʃTʊʌabʒdefghijklmnopstʤuvʧwz'
+IPA_cn = 'ʰŋœɑɔɕəɚɛɤɥɪ˥˦˧˨ɯ˩ɻʂʈʊʐaefijklmnopstuwxy'
+NORM = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 
-symbols = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz' + PAD + EOS + SPACE + IPA
+symbols = NORM + PAD + EOS + PUNC + SPACE + IPA_en + IPA_cn
 #symbols = ALL_SYMBOLS
+

@@ -11,7 +11,8 @@ from text.symbols import symbols, PAD, EOS
 
 # Mappings from symbol to numeric ID and vice versa:
 _symbol_to_id = {s: i for i, s in enumerate(symbols)}
-_id_to_symbol = {i: s for i, s in enumerate(symbols)}
+#_id_to_symbol = {i: s for i, s in enumerate(symbols)}
+_id_to_symbol = {i: s for (s,i) in _symbol_to_id.items()}
 
 # Regular expression matching text enclosed in curly braces:
 _curly_re = re.compile(r'(.*?)\{(.+?)\}(.*)')
