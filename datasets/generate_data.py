@@ -37,7 +37,8 @@ def build_from_path(config):
 
     loss_coeff = defaultdict(one)
     if config.metadata_path.endswith("json"):
-        with open(config.metadata_path) as f:
+        #with open(config.metadata_path) as f:
+        with open(config.metadata_path, encoding='utf-8') as f:
             content = f.read()
         info = json.loads(content)
     elif config.metadata_path.endswith("csv"):
