@@ -19,7 +19,8 @@ class Tacotron():
 
 
     def initialize(
-            self, inputs, input_lengths, num_speakers, speaker_id,
+            #self, inputs, input_lengths, num_speakers, speaker_id,
+            self, inputs, input_lengths, num_speakers, speaker_id,speaker_id2,
             mel_targets=None, linear_targets=None, loss_coeff=None,
             rnn_decoder_test_mode=False, is_randomly_initialized=False,
         ):
@@ -47,6 +48,7 @@ class Tacotron():
                             initializer=tf.truncated_normal_initializer(stddev=0.5))
                     # [N, T_in, speaker_embedding_size]
                     speaker_embed = tf.nn.embedding_lookup(speaker_embed_table, speaker_id)
+                    speaker_embed2 = tf.nn.embedding_lookup(speaker_embed_table, speaker_id2)
 
                 if hp.model_type == 'deepvoice':
                     if hp.speaker_embedding_size == 1:
@@ -241,6 +243,7 @@ class Tacotron():
 
             self.inputs = inputs
             self.speaker_id = speaker_id
+            self.speaker_id2 = speaker_id2
             self.input_lengths = input_lengths
             self.loss_coeff = loss_coeff
             self.mel_outputs = mel_outputs

@@ -16,7 +16,7 @@ from audio import save_audio, inv_spectrogram, inv_preemphasis, \
 from utils import plot, PARAMS_NAME, load_json, load_hparams, \
                   add_prefix, add_postfix, get_time, parallel_run, makedirs
 
-from text.korean import tokenize
+#from text.korean import tokenize
 from text import text_to_sequence, sequence_to_text
 
 
@@ -42,6 +42,8 @@ class Synthesizer(object):
         batch_size = tf.shape(inputs)[0]
         speaker_id = tf.placeholder_with_default(
                 tf.zeros([batch_size], dtype=tf.int32), [None], 'speaker_id')
+        speaker_id2 = tf.placeholder_with_default(
+                tf.zeros([batch_size], dtype=tf.int32), [None], 'speaker_id')
 
         load_hparams(hparams, load_path)
         with tf.variable_scope('model') as scope:
@@ -49,7 +51,7 @@ class Synthesizer(object):
 
             self.model.initialize(
                     inputs, input_lengths,
-                    self.num_speakers, speaker_id)
+                    self.num_speakers, speaker_id, speaker_id2)
             self.wav_output = \
                     inv_spectrogram_tensorflow(self.model.linear_outputs)
 
@@ -68,7 +70,7 @@ class Synthesizer(object):
 
     def synthesize(self,
             texts=None, tokens=None,
-            base_path=None, paths=None, speaker_ids=None,
+            base_path=None, paths=None, speaker_ids=None, speaker_ids2=None,
             start_of_sentence=None, end_of_sentence=True,
             pre_word_num=0, post_word_num=0,
             pre_surplus_idx=0, post_surplus_idx=1,
@@ -117,7 +119,10 @@ class Synthesizer(object):
             return parallel_run(fn, items,
                     desc="plot_graph_and_save_audio", parallel=False)
 
-        input_lengths = np.argmax(np.array(sequences) == 1, 1)
+        #input_lengths = np.argmax(np.array(sequences) == 1, 1)
+        input_lengths = np.asarray([np.array(sequences).shape[1]])
+        print("_input_lengths: ",input_lengths)
+        print("shape of seq: ",np.array(sequences).shape)
 
         fetches = [
                 #self.wav_output,
@@ -162,6 +167,9 @@ class Synthesizer(object):
                 })
             else:
                 feed_dict[self.model.speaker_id] = speaker_ids
+
+        if speaker_ids2 is not None:
+            feed_dict[self.model.speaker_id2] = speaker_ids2
 
         wavs, alignments = \
                 self.sess.run(fetches, feed_dict=feed_dict)
@@ -372,8 +380,9 @@ if __name__ == "__main__":
     parser.add_argument('--load_path', required=True)
     parser.add_argument('--sample_path', default="samples")
     parser.add_argument('--text', required=True)
-    parser.add_argument('--num_speakers', default=1, type=int)
+    parser.add_argument('--num_speakers', default=2, type=int)
     parser.add_argument('--speaker_id', default=0, type=int)
+    parser.add_argument('--speaker_id2', default=1, type=int)
     parser.add_argument('--checkpoint_step', default=None, type=int)
     config = parser.parse_args()
 
@@ -382,8 +391,11 @@ if __name__ == "__main__":
     synthesizer = Synthesizer()
     synthesizer.load(config.load_path, config.num_speakers, config.checkpoint_step)
 
+    txt="mɑˈm, hiˈ sʌgʤɛˈstʌd, æˈz lɔˈŋ æˈz ajˈm ɹajˈtɪŋ ðɪˈs ʧɛˈk awˈt, wajˈ dowˈnt ajˈ pejˈ ðʌ ɹɛˈst ʌˈv jɔˈɹ bɪˈlz? "
     audio = synthesizer.synthesize(
-            texts=[config.text],
+            #texts=[config.text],
+            texts=txt,
             base_path=config.sample_path,
             speaker_ids=[config.speaker_id],
+            speaker_ids2=[config.speaker_id2],
             attention_trim=False)[0]
